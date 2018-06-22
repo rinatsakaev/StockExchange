@@ -11,7 +11,6 @@ namespace StackExchange.Models
     {
         public int OrderId { get; set; }
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.00}")]
         [Range(0, Double.PositiveInfinity)]
         public double Price { get; set; }
 

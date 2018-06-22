@@ -118,3 +118,4 @@ C:\Users\Rinat\source\repos\StackExchange\StackExchange\obj\Debug\StockExchange.
 C:\Users\Rinat\source\repos\StackExchange\StackExchange\obj\Debug\StockExchange.csproj.CoreCompileInputs.cache
 C:\Users\Rinat\source\repos\StackExchange\StackExchange\obj\Debug\StackExchange.dll
 C:\Users\Rinat\source\repos\StackExchange\StackExchange\obj\Debug\StackExchange.pdb
+C:\Users\Rinat\source\repos\StackExchange\StackExchange\obj\Debug\StockExchange.csprojResolveAssemblyReference.cache

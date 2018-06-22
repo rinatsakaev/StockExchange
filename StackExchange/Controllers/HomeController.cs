@@ -21,6 +21,7 @@ namespace StackExchange.Controllers
         {
             _context = new ApplicationDbContext();
         }
+
         [Authorize]
         public ActionResult Index()
         {
@@ -51,25 +52,13 @@ namespace StackExchange.Controllers
                 Logs = _context.Logs.Select(x => x),
                 User = _context.Users.First(t => t.Id == userId)
             };
+            if (!ValidateOrder(order))
+                return View("Index", viewModel);
 
             if (order.Type == OrderType.Ask)
-            {
-                if (order.ApplicationUser.ItemCount < order.Quantity)
-                {
-                    ModelState.AddModelError("Error", "ItemCount<Quantity");
-                    return View("Index", viewModel);
-                }
                 order.ApplicationUser.ItemCount -= order.Quantity;
-            }
             else
-            {
-                if (order.ApplicationUser.Balance < order.Quantity * order.Price)
-                {
-                    ModelState.AddModelError("Error", "Balance < order.Quantity * order.Price");
-                    return View("Index", viewModel);
-                }
                 order.ApplicationUser.Balance -= order.Quantity * order.Price;
-            }
 
             ModelState.Clear();
             if (ExecuteOrder(order))
@@ -103,14 +92,16 @@ namespace StackExchange.Controllers
 
             _context.SaveChanges();
         }
+
         private bool ExecuteOrder(Order order)
         {
             var orderQueue = _context.OrderQueues
-                    .Include(o => o.Queue).OrderBy(q => q.Price)
-                    .Where(o => o.Type != order.Type);
+                .Include(o => o.Queue).OrderBy(q => q.Price)
+                .Where(o => o.Type != order.Type);
 
-            orderQueue = order.Type == OrderType.Ask ? orderQueue.Where(o => o.Price >= order.Price)
-                                       : orderQueue.Where(o => o.Price <= order.Price);
+            orderQueue = order.Type == OrderType.Ask
+                ? orderQueue.Where(o => o.Price >= order.Price)
+                : orderQueue.Where(o => o.Price <= order.Price);
 
             var isCompleted = order.Execute(orderQueue.ToList(), _context);
             _context.SaveChanges();
@@ -118,6 +109,27 @@ namespace StackExchange.Controllers
             return isCompleted;
         }
 
+        private bool ValidateOrder(Order order)
+        {
+            if (order.Price < 0)
+            {
+                ModelState.AddModelError("Error", "Price must be positive");
+                return false;
+            }
 
+            if (order.Type == OrderType.Ask && order.ApplicationUser.ItemCount < order.Quantity)
+            {
+                ModelState.AddModelError("Error", "Items in stock < quantity");
+                return false;
+            }
+
+            if (order.Type == OrderType.Bid && order.ApplicationUser.Balance < order.Quantity * order.Price)
+            {
+                ModelState.AddModelError("Error", "Not enough funds");
+                return false;
+            }
+
+            return true;
+        }
     }
 }
