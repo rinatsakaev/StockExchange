@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@using StackExchange.Models
+@model StackExchange.Models.TradingViewModel
+
+<br/>
+<b>@Html.LabelFor(m => m.User.Balance):</b> @Model.User.Balance
+<br />
+<b>@Html.LabelFor(m => m.User.ItemCount):</b> @Model.User.ItemCount
+
+@Html.ValidationSummary()
+<div class="row">
+    <div class="col-md-6">       
+        @using (Html.BeginForm("AddOrder", "Home"))
+        {
+            @Html.LabelFor(m => m.Order.Quantity)
+            @Html.TextBoxFor(m => m.Order.Quantity, new { @class = "form-control", @type = "number", @min="1"})
+
+            @Html.LabelFor(m => m.Order.Price)
+            @Html.TextBoxFor(m => m.Order.Price, new { @class = "form-control"})
+
+            @Html.HiddenFor(m => m.Order.Type, new { @Value = OrderType.Bid })
+            <br />
+            <button type="submit" class="btn btn-primary">Buy</button>
+        }
+        <h2>
+            Bids
+        </h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+                @foreach (var entry in Model.OrderQueues.Where(o => o.Type == OrderType.Bid))
+                {
+                    <tr>
+                        <td>@entry.Price</td>
+                        <td>@entry.TotalCount</td>
+                    </tr>
+                }
+            </thead>
+        </table>
+    </div>
+    <div class="col-md-6">
+        @using (Html.BeginForm("AddOrder", "Home"))
+        {
+            @Html.LabelFor(m => m.Order.Quantity)
+            @Html.TextBoxFor(m => m.Order.Quantity, new { @class = "form-control", @type = "number", @min = "1" })
+
+            @Html.LabelFor(m => m.Order.Price)
+            @Html.TextBoxFor(m => m.Order.Price, new { @class = "form-control"})
+
+            @Html.HiddenFor(m => m.Order.Type, new { @Value = OrderType.Ask })
+            <br />
+            <button type="submit" class="btn btn-primary">Sell</button>
+        }
+        <h2>
+            Asks
+        </h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+                @foreach (var entry in Model.OrderQueues.Where(o => o.Type == OrderType.Ask))
+                {
+                    <tr>
+                        <td>@entry.Price</td>
+                        <td>@entry.TotalCount</td>
+                    </tr>
+                }
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+
+
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Executed</th>
+            <th>Ask Date</th>
+            <th>Bid Date</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Ask email</th>
+            <th>Bid email</th>
+        </tr>
+        @foreach (var entry in Model.Logs.Reverse())
+        {
+            <tr>
+                <td>@entry.ExecutedDate</td>
+                <td>@entry.AskDate</td>
+                <td>@entry.BidDate</td>
+                <td>@entry.Price</td>
+                <td>@entry.Count</td>
+                <td>@entry.AskEmail</td>
+                <td>@entry.BidEmail</td>
+            </tr>
+        }
+    </thead>
+</table>
