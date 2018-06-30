@@ -11,5 +11,6 @@ namespace StackExchange.Models
         public IEnumerable<LogModel> Logs { get; set; }
         public IEnumerable<OrderQueue> OrderQueues { get; set; }
         public Order Order { get; set; }
+      
     }
 }

@@ -13,7 +13,7 @@ namespace StackExchange.Models
         [Range(0, Double.PositiveInfinity)]
         public double Price { get; set; }
 
-        public int TotalCount => Queue.Sum(x => x.Quantity);
+        public int TotalCount { get; set; }
 
         public OrderType Type { get; set; }
 

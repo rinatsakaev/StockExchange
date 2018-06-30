@@ -1,3 +1,6 @@
 
 *.mdf
 *.ldf
+*.ide
+.vs/StockExchange/v15/.suo
+*.ide

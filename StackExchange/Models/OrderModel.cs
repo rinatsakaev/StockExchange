@@ -11,13 +11,14 @@ namespace StackExchange.Models
     {
         public int OrderId { get; set; }
 
-        [Range(0, Double.PositiveInfinity)]
+        [Range(0.01, Double.PositiveInfinity)]
         public double Price { get; set; }
 
-        [Range(0, Int32.MaxValue)]
+        [Range(1, Int32.MaxValue)]
         public int Quantity { get; set; }
 
         public DateTime DateAdded { get; set; }
+        [Display(Name = "Order type")]
         public OrderType Type { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
